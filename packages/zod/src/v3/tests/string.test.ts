@@ -392,6 +392,19 @@ test("cuid", () => {
   if (!result.success) {
     expect(result.error.issues[0].message).toEqual("Invalid cuid");
   }
+
+  // Strings containing non-base36 characters that the old denylist regex
+  // (/^c[^\s-]{8,}$/i) accepted. The new regex restricts the body to
+  // [0-9a-z], matching the actual CUID v1 base36 format. See #3621.
+  const previouslyAcceptedNonCuids = [
+    "cly63t164000245zw008pggon';select1;",
+    "c<script>alert(1)</script>aaaaaa",
+    "c{};alert(1)//",
+    "C0123_45678",
+  ];
+  for (const s of previouslyAcceptedNonCuids) {
+    expect(cuid.safeParse(s).success).toBe(false);
+  }
 });
 
 test("cuid2", () => {

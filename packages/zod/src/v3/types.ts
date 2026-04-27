@@ -591,7 +591,7 @@ export interface ZodStringDef extends ZodTypeDef {
   coerce: boolean;
 }
 
-const cuidRegex = /^c[^\s-]{8,}$/i;
+const cuidRegex = /^c[0-9a-z]{6,}$/i;
 const cuid2Regex = /^[0-9a-z]+$/;
 const ulidRegex = /^[0-9A-HJKMNP-TV-Z]{26}$/i;
 // const uuidRegex =
@@ -1072,6 +1072,11 @@ export class ZodString extends ZodType<string, ZodStringDef, string> {
   nanoid(message?: errorUtil.ErrMessage) {
     return this._addCheck({ kind: "nanoid", ...errorUtil.errToObj(message) });
   }
+  /**
+   * @deprecated CUID v1 is deprecated by its authors due to information leakage
+   * (timestamps embedded in the id). Use {@link cuid2 | `.cuid2()`} instead.
+   * See https://github.com/paralleldrive/cuid.
+   */
   cuid(message?: errorUtil.ErrMessage) {
     return this._addCheck({ kind: "cuid", ...errorUtil.errToObj(message) });
   }
